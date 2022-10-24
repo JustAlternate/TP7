@@ -12,25 +12,31 @@ void gestion_erreur_terrain(erreur_terrain e) {
   case ERREUR_FICHIER:
     printf("Erreur lecture du terrain : erreur d'ouverture du fichier\n");
     exit(1);
-  case ERREUR_LARGEUR_MANQUANTE:
+  case ERREUR_LECTURE_LARGEUR:
     printf("Erreur lecture du terrain : erreur de lecture de la largeur\n");
     exit(1);
-  case ERREUR_HAUTEUR_MANQUANTE:
+  case ERREUR_LECTURE_HAUTEUR:
     printf("Erreur lecture du terrain : erreur de lecture de la hauteur\n");
     exit(1);
-  case ERREUR_DEPASSEMENT_LARGEUR:
+  case ERREUR_LARGEUR_INCORRECTE:
     printf("Erreur lecture du terrain : largeur incorrecte\n");
     exit(1);
-  case ERREUR_DEPASSEMENT_HAUTEUR:
+  case ERREUR_HAUTEUR_INCORRECTE:
     printf("Erreur lecture du terrain : hauteur incorrecte\n");
     exit(1);
-  case ERREUR_COMMANDE_INCORRECTE:
+  case ERREUR_CARACTERE_INCORRECT:
     printf("Erreur lecture du terrain : caractère incorrect\n");
     exit(1);
   case ERREUR_LIGNE_TROP_LONGUE:
     printf("Erreur lecture du terrain : ligne trop longue\n");
     exit(1);
-  case ERREUR_DEPART_ROBOT_MANQUANT:
+  case ERREUR_LIGNE_TROP_COURTE:
+    printf("Erreur lecture du terrain : ligne trop courte\n");
+    exit(1);
+  case ERREUR_LIGNES_MANQUANTES:
+    printf("Erreur lecture du terrain : lignes manquantes\n");
+    exit(1);
+  case ERREUR_POSITION_ROBOT_MANQUANTE:
     printf(
         "Erreur lecture du terrain : position initiale du robot manquante\n");
     exit(1);
@@ -95,7 +101,6 @@ int main(int argc, char **argv) {
   /* Initialisation de l'état */
   init_etat(&etat);
   do {
-    /* On execute pas a pas le programe */
     res = exec_pas(&prog, &envt, &etat);
     /* Affichage du terrain et du robot */
     afficher_envt(&envt);
