@@ -116,29 +116,30 @@ int main(int argc, char **argv) {
     printf("le fichier test est invalide.");
   }
 
-  if (fgets(fichier_terrain, MAX_TAB, f) == NULL){
+  if (fscanf(f, "%s", fichier_terrain) == 0){
     printf("fichier mal écrit");
   }
-  if (fgets(fichier_programme, MAX_TAB, f) == NULL){
+  if (fscanf(f, "%s", fichier_programme) == 0){
     printf("fichier mal écrit");
   }
-  if (fscanf(f, "%d", &nb_execution) == 0){
+  if (fscanf(f, "%d\n", &nb_execution) == 0){
     printf("fichier mal ecrit");
   }
-  if (fscanf(f, "%c", &reponse_attendu) == 0){
+  if (fscanf(f, "%c\n", &reponse_attendu) == 0){
     printf("fichier mal ecrit");
   }
   if (reponse_attendu == 'N' || reponse_attendu == 'F'){
-    if (fscanf(f, "%d", &x_fin) == 0){
+    if (fscanf(f, "%d\n", &x_fin) == 0){
       printf("fichier mal ecrit");
     }
-    if (fscanf(f, "%d", &y_fin) == 0){
+    if (fscanf(f, "%d\n", &y_fin) == 0){
       printf("fichier mal ecrit");
     }
     if (fscanf(f, "%c", &o_fin) == 0){
       printf("fichier mal ecrit");
     }
   }
+  //printf("le fichier de terrain est: %s.\nle fichier de programme est: %s.\n", fichier_terrain, fichier_programme);
 
   /* Initialisation de l'environnement : lecture du terrain,
      initialisation de la position du robot */
@@ -157,7 +158,7 @@ int main(int argc, char **argv) {
   {
     res = exec_pas(&prog, &envt, &etat);
     /* Affichage du terrain et du robot */
-    afficher_envt(&envt);
+    //afficher_envt(&envt);
     pas++;
   } while (res == OK_ROBOT && pas < nb_execution);
 
@@ -170,25 +171,25 @@ int main(int argc, char **argv) {
         {
         case Est:
           if (o_fin == 'E'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
         case Ouest:
           if (o_fin == 'O'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
         case Nord:
           if (o_fin == 'N'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
         case Sud:
           if (o_fin == 'S'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
@@ -202,7 +203,7 @@ int main(int argc, char **argv) {
     break;
   case SORTIE_ROBOT:
     if (reponse_attendu == 'S'){
-      printf("victoire le test est passé");
+      printf("victoire le test est passé\n");
       return 1;
     }
     printf("Le robot est sorti :-)\n");
@@ -214,25 +215,25 @@ int main(int argc, char **argv) {
         {
         case Est:
           if (o_fin == 'E'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
         case Ouest:
           if (o_fin == 'O'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
         case Nord:
           if (o_fin == 'N'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
         case Sud:
           if (o_fin == 'S'){
-            printf("victoire le test est passé");
+            printf("victoire le test est passé\n");
             return 1;
           }
           break;
@@ -242,17 +243,19 @@ int main(int argc, char **argv) {
       }
     }
     printf("Robot sur une case libre, programme terminé :-/\n");
+    printf("x attendu:%d,y attendu:%d,o attendu:%c\nx du robot:%d,y du robot:%d,o du robot:%d\n", x_fin, y_fin, o_fin, envt.r.x, envt.r.y, envt.r.o);
+    printf("nb_execution:%d\nreponse_attendu:%c\n", nb_execution, reponse_attendu);
     break;
   case PLOUF_ROBOT:
     if (reponse_attendu == 'P'){
-      printf("victoire le test est passé");
+      printf("victoire le test est passé\n");
       return 1;
     }
     printf("Le robot est tombé dans l'eau :-(\n");
     break;
   case CRASH_ROBOT:
     if (reponse_attendu == 'O'){
-      printf("victoire le test est passé");
+      printf("victoire le test est passé\n");
       return 1;
     }
     printf("Le robot s'est écrasé sur un rocher X-(\n");

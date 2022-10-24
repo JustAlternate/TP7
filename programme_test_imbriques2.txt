@@ -1,6 +1,7 @@
 terrain_test.txt
 programme_imbriques2.txt
 10000
-N
-5 0
-O
+F
+5
+0
+E
