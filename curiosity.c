@@ -30,12 +30,6 @@ void gestion_erreur_terrain(erreur_terrain e) {
   case ERREUR_LIGNE_TROP_LONGUE:
     printf("Erreur lecture du terrain : ligne trop longue\n");
     exit(1);
-  case ERREUR_LIGNE_TROP_COURTE:
-    printf("Erreur lecture du terrain : ligne trop courte\n");
-    exit(1);
-  case ERREUR_LIGNES_MANQUANTES:
-    printf("Erreur lecture du terrain : lignes manquantes\n");
-    exit(1);
   case ERREUR_DEPART_ROBOT_MANQUANT:
     printf(
         "Erreur lecture du terrain : position initiale du robot manquante\n");
