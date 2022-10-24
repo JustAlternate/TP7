@@ -4,98 +4,133 @@
 #include <stdio.h>
 #include <string.h>
 
-erreur_terrain lire_terrain(FILE *f, Terrain *t, Robot *robot) {
-  int l, h;   // Dimensions du terrain
-  char temp; //pour la gestion d'erreur
-  // TEST POUR SAVOIR SI LES COORD ROBOT SONT BIEN CHANGES
-  robot->x=-1;//on initialise à -1 pour gérer l'erreur ou le depart du robot est manquant
-  robot->y=-1;
+erreur_terrain lire_terrain(FILE *f, Terrain *t, int *x, int *y) {
+    int l, h;   // Dimensions du terrain
+    int rx, ry; // Coordonnées initiales du robot
+    char ligne[DIM_MAX];
+    int i, j;
+	int test_lecture_dim = 0;
+	int compteur_c = 0; // Compte le nombre de fois où la caractère 'C' est rencontré
 
-
-  if (f == NULL) {
-    return ERREUR_FICHIER;
-  }
-
-  if (robot == NULL){
-    return ERREUR_POINTEUR_ROBOT_NULLE;
-  }
-
-  // Lecture de la largeur
-  if (fscanf(f,"%d\n",&l) == 0){
-    return ERREUR_LARGEUR_MANQUANTE;
-  }
-  if (l > DIM_MAX){
-    return ERREUR_DEPASSEMENT_LARGEUR;
-  }
-  t->largeur = l;
-
-
-  // Lecture de la hauteur
-  if (fscanf(f,"%d\n",&h) == 0){
-    return ERREUR_HAUTEUR_MANQUANTE;
-  }
-  if (h > DIM_MAX){
-    return ERREUR_DEPASSEMENT_HAUTEUR;
-  }
-  t->hauteur = h;
-
-  // Lecture du terrain
-  char obstacle;
-  for (int ligne = 0; ligne < h; ligne++){
-    for (int colonne = 0; colonne < l; colonne++){
-      if (fscanf(f,"%c",&obstacle) == 0){
-        return ERREUR_FICHIER_TROP_COURT;
-      }
-      switch(obstacle){
-        case '#':
-          t->tab[colonne][ligne]=ROCHER;
-          break;
-        case '~':
-          t->tab[colonne][ligne]=EAU;
-          break;
-        case '.':
-          t->tab[colonne][ligne]=LIBRE;
-          break;
-        case 'C':
-          t->tab[colonne][ligne]=LIBRE;
-          robot->x = colonne;
-          robot->y = ligne;
-          break;
-        default:
-          return ERREUR_CARACTERE;
-      }
+    if (f == NULL) {
+        return ERREUR_FICHIER;
     }
-    if (fscanf(f,"%c",&temp) == 0){
-      return ERREUR_FICHIER_TROP_COURT;
+
+    // Lecture de la largeur et de la hauteur
+    test_lecture_dim = fscanf(f,"%d\n", &l);
+	if (test_lecture_dim == 0) {
+		return ERREUR_LECTURE_LARGEUR;
+	}
+
+	test_lecture_dim = fscanf(f,"%d\n", &h);
+	if (test_lecture_dim == 0) {
+		return ERREUR_LECTURE_HAUTEUR;
+	}
+
+	if (h < 0 || h > DIM_MAX) {
+		return ERREUR_HAUTEUR_INCORRECTE;
+	}
+	if (l < 0 || l > DIM_MAX) {
+		return ERREUR_LARGEUR_INCORRECTE;
+	}
+
+    t->hauteur = h;
+    t->largeur = l;
+
+    // Lecture du terrain
+    for (i = 0 ; i < h ; i++) {
+        // On met la ligne i du fichier dans la chaine ligne
+        if (fgets(ligne, DIM_MAX, f) == NULL) {
+			return ERREUR_LIGNES_MANQUANTES;
+		}
+
+        // Pour chaque caractère on associe dans le tableau le type de terrain correspondant
+        for (j = 0 ; j < l ; j++) {
+            switch (ligne[j]) {
+                case '.' : t->tab[j][i] = LIBRE; break;
+                case '#' : t->tab[j][i] = ROCHER; break;
+                case '~' : t->tab[j][i] = EAU; break;
+                // C est la position originale du robot ; c'est donc une case libre, et on enregistre aussi ces coordonnées
+                case 'C' :
+                    t->tab[j][i] = LIBRE;
+                    rx = j;
+                    ry = i;
+					compteur_c++;
+                    break;
+				case '\0':
+					return ERREUR_LIGNE_TROP_COURTE;
+					break;
+				default:
+					return ERREUR_CARACTERE_INCORRECT;
+            }
+        }
     }
-    if (temp != '\n'){
-      return ERREUR_LIGNE_TROP_LONGUE;
-    }// Pour skip le \n de fin de ligne.
-  }
-  robot->o = Est;
-  if (robot->x != -1 && robot->y != -1){
+    if (compteur_c != 1) {
+		return ERREUR_POSITION_ROBOT_MANQUANTE;
+	}
+    // On modifie les coordonnées initiales du robot
+    *x = rx;
+    *y = ry;
+
+
     return OK;
-  } 
-  return ERREUR_DEPART_ROBOT_MANQUANT;
-
 }
 
+/* Renvoie la largeur d'un terrain */
+int largeur(Terrain *t) {
+	return t->largeur;
+}
 
-void afficher_terrain(Terrain *t){
-  for (int x=0; x < t->hauteur;x++){
-    for(int y=0;y<t->largeur; y++){
-      switch(t->tab[y][x]){
-        case LIBRE:
-          printf(".");
-          break;
-        case EAU:
-          printf("~");
-          break;
-        case ROCHER:
-          printf("#");
-          break;
-      }
-    }
-    printf("\n");
-  }
+/* Renvoie la hauteur d'un terrain */
+int hauteur(Terrain *t) {
+	return t->hauteur;
+}
+
+/* Renvoie vrai ssi 0 <= x < largeur, 0 <= y < hauteur et si la case (x,y) du terrain est libre */
+int est_case_libre(Terrain *t, int x, int y) {
+	if (x >= 0 && x < t->largeur && y >= 0 && y < t->hauteur) {
+		return (t->tab[x][y] == LIBRE);
+	}
+	return 0;
+}
+
+/* Affichage du terrain t sur la sortie standard */
+void afficher_terrain(Terrain *t) {
+	int i, j;
+	for (i=0 ; i < t->hauteur ; i++) {
+		for (j = 0 ; j < t->largeur; j++) {
+			switch (t->tab[j][i]) {
+				case LIBRE: printf("."); break;
+				case EAU: printf("~"); break;
+				case ROCHER : printf("#"); break;
+			}
+		}
+		printf("\n");
+	}
+}
+
+/* Écriture d'un terrain t dans un fichier f ouvert en écriture.
+   x et y contiennent les coordonnées du robot
+   Le terrain est écrit au format lisible par lire_terrain */
+void ecrire_terrain(FILE *f, Terrain *t, int x, int y) {
+	int i,j;
+	fprintf(f, "%d\n%d\n", t->largeur, t->hauteur);
+	for (i=0; i < t->hauteur ; i++) {
+		for (j=0; j < t->largeur ; j++) {
+			switch (t->tab[j][i]) {
+				case LIBRE:
+					if (j == x && i == y) {
+						fprintf(f,"C");
+					}
+					else {
+						fprintf(f,".");
+					}
+					break;
+				case ROCHER: fprintf(f,"#"); break;
+				case EAU: fprintf(f, "~"); break;
+			}
+		}
+		fprintf(f,"\n");
+	}
+
 }

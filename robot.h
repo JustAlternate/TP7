@@ -9,7 +9,7 @@ typedef struct {
 } Robot;
 
 /* initialiser le robot r en position (x,y) et orientation o */
-// On utilise pas lol
+void init_robot(Robot *r, int x, int y, Orientation o);
 
 /* faire avancer le robot d'une case */
 void avancer(Robot *r);

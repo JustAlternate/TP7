@@ -1,7 +1,6 @@
 #ifndef _TERRAIN_H_
 #define _TERRAIN_H_
 #include <stdio.h>
-#include "robot.h"
 
 typedef enum { LIBRE, EAU, ROCHER } Case;
 
@@ -16,7 +15,7 @@ typedef struct {
   Case tab[DIM_MAX][DIM_MAX];
 } Terrain;
 
-typedef enum { OK, ERREUR_FICHIER, ERREUR_DEPASSEMENT_LARGEUR, ERREUR_DEPASSEMENT_HAUTEUR, ERREUR_CARACTERE, ERREUR_POINTEUR_ROBOT_NULLE, ERREUR_DEPART_ROBOT_MANQUANT, ERREUR_LARGEUR_MANQUANTE, ERREUR_HAUTEUR_MANQUANTE, ERREUR_FICHIER_TROP_COURT, ERREUR_LIGNE_TROP_LONGUE} erreur_terrain;
+typedef enum { OK, ERREUR_FICHIER, ERREUR_HAUTEUR_INCORRECTE, ERREUR_LECTURE_LARGEUR, ERREUR_LECTURE_HAUTEUR, ERREUR_LARGEUR_INCORRECTE, ERREUR_CARACTERE_INCORRECT, ERREUR_LIGNE_TROP_COURTE, ERREUR_LIGNE_TROP_LONGUE, ERREUR_LIGNES_MANQUANTES, ERREUR_POSITION_ROBOT_MANQUANTE } erreur_terrain;
 
 /* Lecture d'un terrain dans un fichier f, ouvert en lecture
    Résultats :
@@ -27,7 +26,7 @@ typedef enum { OK, ERREUR_FICHIER, ERREUR_DEPASSEMENT_LARGEUR, ERREUR_DEPASSEMEN
    ERREUR_FICHIER si le fichier n'a pas pu être ouvert
    ... (à compléter)
  */
-erreur_terrain lire_terrain(FILE *f, Terrain *t, Robot *robot);
+erreur_terrain lire_terrain(FILE *f, Terrain *t, int *x, int *y);
 
 /* Largeur d'un terrain */
 int largeur(Terrain *t);
