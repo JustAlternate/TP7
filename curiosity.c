@@ -12,19 +12,19 @@ void gestion_erreur_terrain(erreur_terrain e) {
   case ERREUR_FICHIER:
     printf("Erreur lecture du terrain : erreur d'ouverture du fichier\n");
     exit(1);
-  case ERREUR_LECTURE_LARGEUR:
+  case ERREUR_LARGEUR_MANQUANTE:
     printf("Erreur lecture du terrain : erreur de lecture de la largeur\n");
     exit(1);
-  case ERREUR_LECTURE_HAUTEUR:
+  case ERREUR_HAUTEUR_MANQUANTE:
     printf("Erreur lecture du terrain : erreur de lecture de la hauteur\n");
     exit(1);
-  case ERREUR_LARGEUR_INCORRECTE:
+  case ERREUR_DEPASSEMENT_LARGEUR:
     printf("Erreur lecture du terrain : largeur incorrecte\n");
     exit(1);
-  case ERREUR_HAUTEUR_INCORRECTE:
+  case ERREUR_DEPASSEMENT_HAUTEUR:
     printf("Erreur lecture du terrain : hauteur incorrecte\n");
     exit(1);
-  case ERREUR_CARACTERE_INCORRECT:
+  case ERREUR_COMMANDE_INCORRECTE:
     printf("Erreur lecture du terrain : caractère incorrect\n");
     exit(1);
   case ERREUR_LIGNE_TROP_LONGUE:
@@ -36,7 +36,7 @@ void gestion_erreur_terrain(erreur_terrain e) {
   case ERREUR_LIGNES_MANQUANTES:
     printf("Erreur lecture du terrain : lignes manquantes\n");
     exit(1);
-  case ERREUR_POSITION_ROBOT_MANQUANTE:
+  case ERREUR_DEPART_ROBOT_MANQUANT:
     printf(
         "Erreur lecture du terrain : position initiale du robot manquante\n");
     exit(1);
